@@ -1,0 +1,3 @@
+[submodule "HeteroFuzz"]
+	path = HeteroFuzz
+	url = https://github.com/UCLA-SEAL/HeteroFuzz.git
