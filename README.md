@@ -39,7 +39,7 @@ Pls follow the steps on devcloud readme.md file until you can succesfully [login
 Download the repo on your devcloud account while on login-2 mode and cd into heterofuzz folder:
 ```
 user@iMac:~$ ssh devcloud
-u12345@login-2:~$ git clone https://github.com/wjy99-c/HeteroTest.git
+u12345@login-2:~$ git clone --recurse-submodules https://github.com/wjy99-c/HeteroTest.git
 u12345@login-2:~$ cd HeteroTest/HeteroFuzz/prototype; make
 ```
 It is a downgraded version of HeteroFuzz. The hardware monitor is turned off so it should works similar to AFL. This HeteroFuzz will be our baseline. Follow the steps on HeteroFuzz [readme](https://github.com/UCLA-SEAL/HeteroFuzz/blob/main/readme.md). Try to run hello world example in HeteroFuzz with:
