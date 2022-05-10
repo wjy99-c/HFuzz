@@ -55,3 +55,26 @@ Login in one of the oneapi node and go to vector-add folder:
 ```
 cd ~/HeteroTest/vector-add
 ```
+Under src folder, there are two versions of vector-add. Pls first try vector-add-buffers.cpp first. Complie the initial version with dpc++ compiler and run the emulation version:
+
+```
+dpcpp -fintelfpga src/vector-add-buffers.cpp -o vector-add-buffers.fpga_emu -DFPGA_EMULATOR=1
+./vector-add-buffers.fpga_emu
+```
+You should be able to see the success notification at end:
+```
+Vector add successfully completed on device.
+```
+
+## 5 Use Heterofuzz for vector-add:
+
+Since the heterofuzz we used is a downgraded version, there is no fpga specific feedback for test generation. To enable fuzzing, we should modify the vector-add with a few lines of code. I already prepared a modified version as vector-add-heterofuzz.cpp:
+```
+dpcpp -fintelfpga src/vector-add-heterofuzz.cpp -o vector-add-heterofuzz.fpga_emu -DFPGA_EMULATOR=1
+./vector-add-heterofuzz.fpga_emu your_test_file
+```
+Run heterofuzz for vector-add:
+```
+../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-heterofuzz.fpga_emu 
+```
+Since there is no feedback from the vector-add, your_good_outputs_folder should only have the seed input.
