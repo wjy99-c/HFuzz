@@ -90,3 +90,17 @@ You can follow the same step to invoke fuzzing
 ```
 ../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-buffers-heterofuzz.gpu
 ```
+
+## 6 Use Scripts to run Heterofuzz
+Login in to DPC node first
+```
+qsub -I -l nodes=1:gpu:ppn=2
+```
+Run heterofuzz for vector-add:
+```
+./vector_add_fuzz.sh
+```
+Run heterofuzz for matrix-mul:
+```
+./matrix_mul_fuzz.sh
+```
