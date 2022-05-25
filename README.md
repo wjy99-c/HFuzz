@@ -78,3 +78,15 @@ Run heterofuzz for vector-add:
 ../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-heterofuzz.fpga_emu 
 ```
 Since there is no feedback from the vector-add, your_good_outputs_folder should only have the seed input.
+
+## 5 Run Heterofuzz on GPU and other nodes
+
+Thanks to DPC++, we can compile the same kernel code to different hardware devices. For GPU, login a GPU node first and compile with GPU
+```
+qsub -I -l nodes=1:gpu:ppn=2
+dpcpp -std=c++17 -g -o vector-add-buffers-heterofuzz.gpu src/vector-add-buffers-heterofuzz.cpp
+```
+You can follow the same step to invoke fuzzing
+```
+../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-buffers-heterofuzz.gpu
+```
