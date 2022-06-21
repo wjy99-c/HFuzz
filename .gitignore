@@ -1,0 +1,5 @@
+.idea/
+*.dSYM
+*.dSYM/
+.DS_Store
+.vscode/
