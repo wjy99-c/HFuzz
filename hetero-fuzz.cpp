@@ -374,8 +374,8 @@ int run_target(char* app, char mutated_input[]){
 
   //std::string temp_simulation = "env BITSTREAM=a.aocx CL_CONTEXT_EMULATOR_DEVICE_INTELFPGA=1 INTEL_FPGA_OCL_PLATFORM_NAME=\"$EMULATOR_PLATFORM\" ./" + std::string(app) + std::string(" ") + std::string(argv[1]);
   //std::string temp_fpga = "env BITSTREAM=a.aocx INTEL_FPGA_OCL_PLATFORM_NAME=\"$HW_PLATFORM\" AOC_OPTION=\"-board=$FPGA_BOARD\" ./" + std::string(app) + std::string(" ") + std::string(argv[1]);
-  std::string temp_fpga = "qsub -l nodes=s001-n085:ppn=2 " + std::string(app) + std::string("-fpga.sh -v") + std::string(argv[1]);
-  std::string temp_gpu = "qsub -l nodes=1:gpu:ppn=2 " + std::string(app) + std::string("-gpu.sh -v") + std::string(argv[1]);
+  std::string temp_fpga = "qsub -l nodes=s001-n085:ppn=2 " + std::string(app) + std::string("-fpga.sh -v ") + std::string(argv[1]);
+  std::string temp_gpu = "qsub -l nodes=1:gpu:ppn=2 " + std::string(app) + std::string("-gpu.sh -v ") + std::string(argv[1]);
   const char* execute = NULL;
   if (devcloud_fpga_enable) {
     execute = temp_fpga.c_str();
