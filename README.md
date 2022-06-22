@@ -104,3 +104,20 @@ Run heterofuzz for matrix-mul:
 ```
 ./matrix_mul_fuzz.sh
 ```
+
+## 7 Enable Differential Testing
+
+First, you need to write a shell script for the target application. The examples are shown in shell_file_for_differential_testing folders. Also, you need to rewrite the applications. The output for gpu execution should be written in gpu.txt, and the output for fpag simulation should be written in fpga_simulation.txt
+
+The gpu version and fpga simulation version should have the following name:
+```
+u93631@login-2:~$ ls
+your_app_name-fpga.sh your_app_name-gpu.sh
+```
+
+Then copy and paste the hetero_fuzz.cpp in the root folder to HeteroFuzz/prototype folder and remake the heterofuzz.
+
+You can start differential testing by:
+```
+../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 your_app_name
+```
