@@ -279,6 +279,7 @@ void BlockedFloydWarshall(queue &q, int *graph) {
 }
 
 int main(int argc, char *argv[]) {
+  std::string report_name = "gpu.txt";
     //Read from user specified graph, nodes.
     //if(argc > 2) nodes = argv[2];
 
@@ -286,17 +287,16 @@ int main(int argc, char *argv[]) {
     #if FPGA_EMULATOR
     // DPC++ extension: FPGA emulator selector on systems without FPGA card.
     ext::intel::fpga_emulator_selector d_selector;
+    report_name = "fpga_simulation.txt";
   #elif FPGA
     // DPC++ extension: FPGA selector on systems with FPGA card.
     ext::intel::fpga_selector d_selector;
+    report_name = "fpga_simulation.txt";
   #else
     // The default device selector will select the most performant device.
     default_selector d_selector;
   #endif
-
-
-
-
+  
 
     try {
         queue q{d_selector, dpc_common::exception_handler};
@@ -339,8 +339,11 @@ int main(int argc, char *argv[]) {
         }
 
         int number; int itr = 0;
+        int a_max = INT_MIN; int a_min = INT_MAX;
         while((read >> number) and (itr < nodes*nodes)){
             graph[itr] = number;
+            if(number>a_max) a_max = number;
+            if(number<a_min) a_min = number;
             itr++;
         }
         read.close();
@@ -397,6 +400,10 @@ int main(int argc, char *argv[]) {
         free(graph);
         free(sequential, q);
         free(parallel, q);
+        std::ofstream outfile;
+        outfile.open(report_name);
+        outfile << a_max << std::endl << a_min << std::endl;
+        outfile.close();
     } catch (std::exception const &e) {
         cout << "An exception is caught while computing on device.\n";
         terminate();

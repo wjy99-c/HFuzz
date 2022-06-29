@@ -28,7 +28,7 @@ static int num_elements = 10000;
 // are inputs to the parallel function
 void DpcppParallel(queue &q, std::vector<Complex2> &in_vect1,
                    std::vector<Complex2> &in_vect2,
-                   std::vector<Complex2> &out_vect) {
+                   std::vector<Complex2> &out_vect ) {
   auto R = range(in_vect1.size());
   if (in_vect2.size() != in_vect1.size() || out_vect.size() != in_vect1.size()){ 
 	  std::cout << "ERROR: Vector sizes do not  match"<< "\n";
@@ -93,6 +93,7 @@ void InitializeCVector(vector<Complex2> &a){
 }
 
 int main(int argc, char* argv[]) {
+    std::string report_name = "gpu.txt";
     //Change size of complex vector, if specified in argv[2]
     if (argc > 2) num_elements = stoi(argv[2]);
     
@@ -100,9 +101,11 @@ int main(int argc, char* argv[]) {
     #if FPGA_EMULATOR
     // DPC++ extension: FPGA emulator selector on systems without FPGA card.
     ext::intel::fpga_emulator_selector d_selector;
+    report_name = "fpga_simulation.txt";
     #elif FPGA
     // DPC++ extension: FPGA selector on systems with FPGA card.
     ext::intel::fpga_selector d_selector;
+    report_name = "fpga_simulation.txt";
     #else
     // The default device selector will select the most performant device.
     default_selector d_selector;
@@ -127,29 +130,38 @@ int main(int argc, char* argv[]) {
     int number;
     int i = 0;
     bool real = true;
+    int a_min_real = INT_MAX; int a_min_img = INT_MAX;
+    int a_max_real = INT_MIN; int a_max_img = INT_MIN;
     while((read >> number) and (i/2 < num_elements)){
         if(real){
             input_vect1.at(i/2).m_real_ = number;
+            if(number>a_max_real) a_max_real = number;
+            if(number<a_min_real) a_min_real = number;
         }else{
             input_vect1.at(i/2).m_imag_ = number;
+            if(number>a_max_img) a_max_img = number;
+            if(number<a_min_img) a_min_img = number;
         }
         real = !real;
         i++;
     }
 
     i = 0; real = true;
-
+    int b_min_real = INT_MAX; int b_min_img = INT_MAX;
+    int b_max_real = INT_MIN; int b_max_img = INT_MIN;
     while((read >> number) and (i/2 < num_elements)){
         if(real){
             input_vect2.at(i/2).m_real_ = number;
+            if(number>b_max_real) b_max_real = number;
+            if(number<b_min_real) b_min_real = number;
         }else{
             input_vect2.at(i/2).m_imag_ = number;
+            if(number>b_max_img) b_max_img = number;
+            if(number<b_min_img) b_min_img = number;
         }
         real = !real;
         i++;
     }
-
-    
 
     read.close();
     try {
@@ -162,6 +174,7 @@ int main(int argc, char* argv[]) {
         std::terminate();
     }
 
+    //std::cout<<"givemesomething"<<report_name<<std::endl;
     std::cout
         << "****************************************Multiplying Complex numbers "
             "in Parallel********************************************************"
@@ -181,6 +194,12 @@ int main(int argc, char* argv[]) {
 
     // Compare the outputs from the parallel and the scalar functions. They should
     // be equal
+
+    std::ofstream outfile;
+    outfile.open(report_name);
+    outfile << a_max_real << std::endl << a_min_real << std::endl << a_max_img << std::endl << a_min_img << std::endl;
+    outfile << b_max_real << std::endl << b_min_real << std::endl << b_max_img << std::endl << b_min_img << std::endl;
+    outfile.close();
 
     int ret_code = Compare(out_vect_parallel, out_vect_scalar);
     if (ret_code == 1) {
