@@ -36,11 +36,11 @@ Pls follow the steps on devcloud readme.md file until you can succesfully [login
 
 ## 3 Prepare: HeteroFuzz
 
-Download the repo on your devcloud account while on login-2 mode and cd into heterofuzz folder:
+Download the repo on your devcloud account while on login-2 mode and cd into hfuzz folder:
 ```
 user@iMac:~$ ssh devcloud
-u12345@login-2:~$ git clone --recurse-submodules https://github.com/wjy99-c/HeteroTest.git
-u12345@login-2:~$ cd HeteroTest/HeteroFuzz/prototype; make
+u12345@login-2:~$ git clone --recurse-submodules https://github.com/wjy99-c/HFuzz.git
+u12345@login-2:~$ cd HFuzz/HFuzz-prototype; make
 ```
 It is a downgraded version of HeteroFuzz. The hardware monitor is turned off so it should works similar to AFL. This HeteroFuzz will be our baseline. Follow the steps on HeteroFuzz [readme](https://github.com/UCLA-SEAL/HeteroFuzz/blob/main/readme.md). Try to run hello world example in HeteroFuzz with:
 
@@ -53,7 +53,7 @@ It is a downgraded version of HeteroFuzz. The hardware monitor is turned off so 
 Login in one of the oneapi node and go to vector-add folder:
 
 ```
-cd ~/HeteroTest/vector-add
+cd ~/HFuzz/vector-add
 ```
 Under src folder, there are two versions of vector-add. Pls first try vector-add-buffers.cpp first. Complie the initial version with dpc++ compiler and run the emulation version:
 
