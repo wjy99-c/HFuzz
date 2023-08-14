@@ -1,8 +1,8 @@
-# HeteroTest
+# HFuzz
 
 ## 1 Introduction
 
-This is the repo for the summer task. We need to build a cross-devices differential testing tool that works on devcloud with DPC++.
+This is the repo for the HFuzz's AE. We build a cross-devices fuzz testing tool that works on devcloud with DPC++.
 
 ## 2 [Getting account on devcloud](https://github.com/intel/FPGA-Devcloud/blob/master/main/Devcloud_Access_Instructions/README.md)
 
@@ -34,7 +34,7 @@ It's all about you and your code. We look forward to the innovations you'll crea
 
 Pls follow the steps on devcloud readme.md file until you can succesfully [login the oneapi nodes](https://github.com/intel/FPGA-Devcloud/blob/master/main/Devcloud_Access_Instructions/README.md#50-connecting-to-servers-running-fpga-development-software)
 
-## 3 Prepare: HeteroFuzz
+## 3 Prepare: HFuzz
 
 Download the repo on your devcloud account while on login-2 mode and cd into hfuzz folder:
 ```
@@ -42,7 +42,7 @@ user@iMac:~$ ssh devcloud
 u12345@login-2:~$ git clone --recurse-submodules https://github.com/wjy99-c/HFuzz.git
 u12345@login-2:~$ cd HFuzz/HFuzz-prototype; make
 ```
-It is a downgraded version of HeteroFuzz. The hardware monitor is turned off so it should works similar to AFL. This HeteroFuzz will be our baseline. Follow the steps on HeteroFuzz [readme](https://github.com/UCLA-SEAL/HeteroFuzz/blob/main/readme.md). Try to run hello world example in HeteroFuzz with:
+Try to run hello world example in HFuzz with:
 
 ```
 ./fuzz good-seeds/ good-outputs/ 10 hello
@@ -66,20 +66,20 @@ You should be able to see the success notification at end:
 Vector add successfully completed on device.
 ```
 
-## 5 Use Heterofuzz for vector-add:
+## 5 Use Hfuzz for vector-add:
 
-Since the heterofuzz we used is a downgraded version, there is no fpga specific feedback for test generation. To enable fuzzing, we should modify the vector-add with a few lines of code. I already prepared a modified version as vector-add-heterofuzz.cpp:
+Since the hfuzz we used is a downgraded version, there is no fpga specific feedback for test generation. To enable fuzzing, we should modify the vector-add with a few lines of code. I already prepared a modified version as vector-add-heterofuzz.cpp:
 ```
-dpcpp -fintelfpga src/vector-add-heterofuzz.cpp -o vector-add-heterofuzz.fpga_emu -DFPGA_EMULATOR=1
+dpcpp -fintelfpga vector-add/src/vector-add-heterofuzz.cpp -o vector-add-heterofuzz.fpga_emu -DFPGA_EMULATOR=1
 ./vector-add-heterofuzz.fpga_emu your_test_file
 ```
-Run heterofuzz for vector-add:
+Run Hfuzz for vector-add:
 ```
-../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-heterofuzz.fpga_emu 
+../HFuzz/HFuzz-prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-heterofuzz.fpga_emu 
 ```
-Since there is no feedback from the vector-add, your_good_outputs_folder should only have the seed input.
 
-## 5 Run Heterofuzz on GPU and other nodes
+
+## 5 Run Hfuzz on GPU and other nodes
 
 Thanks to DPC++, we can compile the same kernel code to different hardware devices. For GPU, login a GPU node first and compile with GPU
 ```
@@ -88,24 +88,24 @@ dpcpp -std=c++17 -g -o vector-add-buffers-heterofuzz.gpu src/vector-add-buffers-
 ```
 You can follow the same step to invoke fuzzing
 ```
-../HeteroFuzz/prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-buffers-heterofuzz.gpu
+../HFuzz/HFuzz-prototype/fuzz your_input_file_folder your_good_outputs_folder 10 vector-add-buffers-heterofuzz.gpu
 ```
 
-## 6 Use Scripts to run Heterofuzz
+## 6 Use Scripts to run Hfuzz
 Login in to DPC node first
 ```
 qsub -I -l nodes=1:gpu:ppn=2
 ```
-Run heterofuzz for vector-add:
+Run hfuzz for vector-add:
 ```
 ./vector_add_fuzz.sh
 ```
-Run heterofuzz for matrix-mul:
+Run hfuzz for matrix-mul:
 ```
 ./matrix_mul_fuzz.sh
 ```
 
-## 7 Enable Differential Testing
+## 7 Enable Differential Testing [Experimental]
 
 First, you need to write a shell script for the target application. The examples are shown in shell_file_for_differential_testing folders. Also, you need to rewrite the applications. The output for gpu execution should be written in gpu.txt, and the output for fpag simulation should be written in fpga_simulation.txt
 
