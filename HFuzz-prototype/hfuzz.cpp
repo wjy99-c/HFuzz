@@ -839,7 +839,7 @@ static void setup_shm(){
 
 int main(int argc, char** argv) {
 
-  SAYF(cCYA "hfuzz " cBRI VERSION cRST " by <nobody@xxx>\n");
+  SAYF(cCYA "hfuzz " cBRI VERSION cRST " by <wangjiyuan@cs.ucla.edu>\n");
 
   memset(in_dir, 0, 256);
   memset(out_dir, 0, 256);
