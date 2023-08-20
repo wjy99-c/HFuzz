@@ -50,9 +50,10 @@ Try to run hello world example in HFuzz with:
 
 ## 4 Prepare: Vector-add
 
-Login in one of the oneapi node and go to vector-add folder:
+Login in one of the oneapi nodes [here](https://devcloud.intel.com/oneapi/documentation/shell-commands/#graphics-usage-on-the-fpga-devcloud) and go to vector-add folder:
 
 ```
+qsub -I -l nodes=arria10:ppn=2
 cd ~/HFuzz/vector-add
 ```
 Under src folder, there are two versions of vector-add. Pls first try vector-add-buffers.cpp first. Complie the initial version with dpc++ compiler and run the emulation version:
